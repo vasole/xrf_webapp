@@ -52,14 +52,22 @@ def _getFisxMaterials(webConfiguration, elementsInstance=None):
                 comment = inputMaterialDict.get(Comment, "")
                 if not len(comment):
                     comment = ""
-                compoundList = inputMaterialDict[CompoundList]
-                fractionList = inputMaterialDict[CompoundFraction]
-                if not hasattr(fractionList, "__getitem__"):
-                    compoundList = [compoundList]
-                    fractionList = [fractionList]
+                compoundList = []
+                fractionList = []
+                idx = 0
+                for compound in inputMaterialDict[CompoundList]:
+                    if len(compound):
+                        compoundList.append(compound)
+                        fractionList.append(\
+                            float(inputMaterialDict[CompoundFraction][idx]))
+                    idx += 1
                 composition = {}
-                for n in range(len(compoundList)):
-                    composition[compoundList[n]] = float(fractionList[n])
+                if len(compoundList):
+                    for n in range(len(compoundList)):
+                        composition[compoundList[n]] = float(fractionList[n])
+                else:
+                    # assume we have a formula
+                    composition[materialName] = 1.0
                 # check the composition is expressed in terms of elements
                 # and not in terms of other undefined materials
                 totallyDefined = True
@@ -99,17 +107,12 @@ def _getBeamParameters(webConfiguration):
     return energyList, weightList, characteristicList
 
 def _getBeamFilters(webConfiguration):
-    """
-    Due to wrapping constraints, the filter list must have the form:
-    [[Material name or formula0, density0, thickness0, funny factor0],
-     [Material name or formula1, density1, thickness1, funny factor1],
-     ...
-     [Material name or formulan, densityn, thicknessn, funny factorn]]
-    """
-    # Translation dictionnary
-    return []
+    return _getAttenuators(webConfiguration, "Beam Filter")
 
-def _getAttenuators(webConfiguration):
+def _getFilters(webConfiguration):
+    return _getAttenuators(webConfiguration, "Filter")
+
+def _getAttenuators(webConfiguration, filterType):
     """
     Due to wrapping constraints, the filter list must have the form:
     [[Material name or formula0, density0, thickness0, funny factor0],
@@ -118,7 +121,27 @@ def _getAttenuators(webConfiguration):
      [Material name or formulan, densityn, thicknessn, funny factorn]]
     """
     # Translation dictionnary
-    return []
+    # Web to module translator to simplify updates
+    Type = "type"
+    Material = "material"
+    Thickness = "thickness"
+    Density = "density"
+    Funny = "funny"
+    # Extract the parameters
+    multilayer = []    
+    for layer in webConfiguration['attenuators']:
+        if layer.get(Type).lower().startswith(filterType.lower()):
+            try:
+                material = layer[Material]
+                density = float(layer[Density])
+                thickness = float(layer[Thickness])
+                funny = float(layer[Funny])
+                multilayer.append([material, density, thickness, funny])
+            except:
+                text = "Error defining sample %s" % name
+                text += "\n" + ("%s" % sys.exc_info()[1])
+                raise ValueError(text)
+    return multilayer
 
 def _getSampleParameters(webConfiguration):
     """
@@ -216,6 +239,13 @@ def getMultilayerFluorescence(webConfiguration, elementsInstance=None):
     if DEBUG:
         print("setting sample")
     xrf.setSample(multilayerSample)
+
+    # the attenuators
+    attenuatorList = _getFilters(webConfiguration)
+    if len(attenuatorList) > 0:
+        if DEBUG:
+            print("setting attenuators")
+        xrf.setAttenuators(attenuatorList)
 
     # the geometry
     if DEBUG:

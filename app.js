@@ -285,7 +285,7 @@ function get_attenuators() {
         att.density = $(input_cols[0]).val();
         att.thickness = $(input_cols[1]).val();
         att.funny = $(input_cols[2]).val();
-        att.material = $.trim($(btns[1]).text());
+        att.material = $.trim($(btns[0]).text());
         attenuators.push(att);
         }
     });
@@ -299,7 +299,7 @@ function get_attenuators() {
         att.density = $(input_cols[0]).val();
         att.thickness = $(input_cols[1]).val();
         att.funny = $(input_cols[2]).val();
-        att.material = $.trim($(btns[1]).text());
+        att.material = $.trim($(btns[0]).text());
         attenuators.push(att);
         }
     }); 
