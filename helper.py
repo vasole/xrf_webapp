@@ -270,6 +270,7 @@ def getMultilayerFluorescence(webConfiguration, elementsInstance=None):
                     "L", "L1", "L2", "L3",
                     "M"]
     peakList = []
+    actualPeakList = []
     for peakDict in webConfiguration["peaks"]:
         # element
         ele = peakDict["element"].strip()
@@ -284,7 +285,12 @@ def getMultilayerFluorescence(webConfiguration, elementsInstance=None):
             raise ValueError("Empty peak family")
         elif family not in peakFamilies:
             raise ValueError("Invalid peak family: <%s>"  % ele)
-        peak = ele + " " + family
+        if family in ["KA"]:        
+            peak = ele + " " + "Ka"
+        elif family in ["KB"]:        
+            peak = ele + " " + "Kb"
+        else:
+            peak = ele + " " + family
 
         # layer if requested
         layer = peakDict.get("layer").strip().upper()
