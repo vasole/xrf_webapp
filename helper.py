@@ -313,7 +313,7 @@ def getMultilayerFluorescence(webConfiguration, elementsInstance=None):
 def getTextOutput(expectedFluorescence):
     fluo = expectedFluorescence
     text = ""
-    text = "Element   Peak            Energy    Secondary   Tertiary Rate/MassFraction Rate"
+    text = "Element   Peak            Energy    Secondary  Tertiary  Rate/MassFraction  Rate"
     text += "\n"
     for key in fluo:
         for layer in fluo[key]:
@@ -340,7 +340,7 @@ def getTextOutput(expectedFluorescence):
                 # correction due to secondary excitation
                 enhancement2 = (primary + secondary) / primary
                 enhancement3 = (primary + secondary + tertiary) / primary
-                text += ("%s   %s    %7.4f     %.5f    %.5f     %.3e     %.3e" % \
+                text += ("%s   %s    %7.4f     %.3f     %.3f      %.3e     %.3e" % \
                                    (key, peak + (14 - len(peak)) * " ", energy,
                                    enhancement2, enhancement3, rate, actualRate))
                 text += "\n"
