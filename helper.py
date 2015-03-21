@@ -73,7 +73,10 @@ def _getFisxMaterials(webConfiguration, elementsInstance=None):
                 totallyDefined = True
                 for element in composition:
                     #check if it can be understood
-                    if not len(elementsInstance.getComposition(element)):
+                    if element in processedMaterialList:
+                        # already defined
+                        continue
+                    elif not len(elementsInstance.getComposition(element)):
                         # compound not understood
                         # probably we have a material defined in terms of other material
                         totallyDefined = False
