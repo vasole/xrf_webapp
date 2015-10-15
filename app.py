@@ -53,5 +53,13 @@ if __name__ == "__main__":
 
     #logging.basicConfig()
     #logging.getLogger().setLevel(logging.DEBUG)
-
+    #print(len(sys.argv))
+    if len(sys.argv) > 1:
+        pid=os.getpid()
+        pidfile = sys.argv[1]  #"/var/run/fisxserver.pid"
+        if os.path.exists(pidfile):
+            os.remove(pidfile)
+        f = open(pidfile, "w")
+        f.write("%d"  % pid)
+        f.close()
     serve_forever(options.port)
