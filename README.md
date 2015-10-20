@@ -4,7 +4,10 @@ Web application for XRF
 Dependency:
 - bottle (`pip install bottle`)
 
+
 ## How to run it ?
+You can find an instance of [this server running](http://fisxserver.esrf.fr) or start your own local copy:
+
 
 `python app.py`
 
