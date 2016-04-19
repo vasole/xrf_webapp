@@ -348,24 +348,3 @@ def getTextOutput(expectedFluorescence):
                                    enhancement2, enhancement3, rate, actualRate))
                 text += "\n"
     return text
-
-if __name__ == "__main__":
-    DEBUG = 1
-    import time
-    import sys
-    if len(sys.argv) < 2:
-        print("Usage: python FisxHelper FitConfigurationFile [element] [matrix_flag]")
-        sys.exit(0)
-    fileName = sys.argv[1]
-    if len(sys.argv) > 2:
-        element = sys.argv[2]
-        if len(sys.argv) > 3:
-            matrix = int(sys.argv[3])    
-            print(getFisxCorrectionFactorsFromFitConfigurationFile(\
-                fileName, elementsFromMatrix=matrix))[element]
-        else:
-            print(getFisxCorrectionFactorsFromFitConfigurationFile(fileName)) \
-                                                                    [element]
-    else:
-        print(getFisxCorrectionFactorsFromFitConfigurationFile(fileName))
-
